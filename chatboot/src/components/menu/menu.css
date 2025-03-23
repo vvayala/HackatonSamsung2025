@@ -1,0 +1,148 @@
+
+.sidebar {
+  height: 100%;
+  width: 220px;
+  background: #17161f;
+  background: #1a1a1a;
+  padding: 6px 14px;
+  z-index: 99;
+  transition: all 0.5s ease;
+
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.container_menu {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar .logo-details {
+  height: 90px;
+  width: 200px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container_img-logo {
+  height: 85px;
+  width: 85px;
+}
+
+.sidebar .logo-details img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 100%;
+}
+
+
+
+
+.nav-list {
+  list-style: none;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+
+.nav-list button {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  height: 100%;
+
+  border-radius: 12px;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  background: #11101D;
+  padding: .3em .8em;
+
+  /* border-color: #fff; */
+}
+
+
+.icon_item_menu {
+  height: 40px;
+  width: 40px;
+  overflow: hidden;
+}
+
+.icon_item_menu img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sidebar li button:hover {
+  background: #FFF;
+}
+
+
+.links_name {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 400;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: 0.4s;
+}
+
+/* .links_name, */
+button:hover i {
+  transition: all 0.5s ease;
+  color: #11101D;
+}
+
+
+
+
+
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 12px;
+
+}
+
+
+
+.btn_logout {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: transparent;
+  transition: background-color 0.3s;
+  max-height: 50px;
+}
+
+.btn_logout span {
+  font-size: 0.9rem;
+}
+
+.btn_logout:hover {
+  background-color: #c0392b;
+}
+
+.btn_logout i {
+  font-size: 1.2rem;
+}

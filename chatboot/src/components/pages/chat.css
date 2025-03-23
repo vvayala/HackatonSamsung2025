@@ -1,0 +1,76 @@
+main {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+
+    display: grid;
+    grid-template-columns: .16fr 1fr;
+}
+
+.section_chat {
+    height: 100vh;
+    /* width: 100%; */
+    display: flex;
+    flex-direction: column;
+}
+/* titulo del chat boot */
+.title_chatBoot{
+    height: 5vh;
+    text-align: center;
+    font-size: 2rem;
+    margin: 0;
+    padding: .6rem 0;
+}
+
+/* seccion principal de todo el chat */
+.section_chat_group{
+    width: 100%;
+    min-height: 90vh;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#contenedor_mensaje{
+    min-height: 78vh;
+    max-height: 80vh;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    scroll-behavior: smooth;
+}
+
+#contendor_input{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 5vh;
+}
+
+
+#contenedor_mensaje::-webkit-scrollbar {
+    display: none;
+}
+
+
+@media (max-width: 768px) {
+    .title_chatBoot{
+        font-size: 1.5rem;
+    }
+
+    #contenedor_mensaje{
+        min-height: 60vh;
+        max-height: 80vh;
+    }
+    
+    #contendor_input{
+        height: 5vh;
+    }
+
+    /* para el input de mensaje */
+    .messageBox{
+        width: 100%;
+    }
+}
