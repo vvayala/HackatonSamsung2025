@@ -2,10 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import Mensaje from "../mensajes/mensaje";
 import EntradaChatBoot from "../input/input";
 import { ToastContainer } from "react-toastify";
-
 import Notificacion from "../Notificacion.jsx"
-
 import axios from "axios";
+import FormChatUsser from "./FormChatUsser.jsx";
 
 const ChatSeccion = ({ endPoint, idConversacion, onVolver }) => {
 
@@ -16,9 +15,11 @@ const ChatSeccion = ({ endPoint, idConversacion, onVolver }) => {
     const [mensajesApi, setMensajesApi] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    const [mostrarFormChat, setMostrarFormChat] = useState(false);
+
     const [mensajes, setMensajes] = useState([{
         actor: 'Chatboot',
-        mensaje: 'Hola soy HipertensoBot, ¿En qué puedo ayudarte?'
+        mensaje: `Hola ${data['name']} soy HipertensoBot, ¿En qué puedo ayudarte?`
     }]);
 
     const contenedorRef = useRef(null);
@@ -72,8 +73,7 @@ const ChatSeccion = ({ endPoint, idConversacion, onVolver }) => {
     };
 
 
-    const handleEnviarMensaje = async (mensajeTexto) => {
-
+    const enviarConversacion = async (mensajeTexto, dataForm = null) => {
         const mensajeNuevo = {
             mensaje: mensajeTexto,
             actor: data['name']
@@ -83,8 +83,8 @@ const ChatSeccion = ({ endPoint, idConversacion, onVolver }) => {
                 "mensaje": mensajeTexto,
                 "id_usuario": data['id'],
                 "usuario": data['name'],
-                "id_conversacion": id_conversacion
-
+                "id_conversacion": id_conversacion,
+                "dataForm": dataForm
             });
             conversacion(mensajeNuevo);
             const res = response.data
@@ -97,7 +97,29 @@ const ChatSeccion = ({ endPoint, idConversacion, onVolver }) => {
             setIdConversacion(res.id_conversacion)
         } catch (error) {
             Notificacion("Error al consultar API", "error");
+        }finally{
+            // condicionamos para que se oculte el form
+            if (dataForm != null) setMostrarFormChat(false)
         }
+    }
+
+    const enviarPeticionForm = (data) => {
+        enviarConversacion("Rellene el formulario",data)
+    }
+
+    const handleEnviarMensaje = async (mensajeTexto) => {
+
+        // condicionamos para mostrar el form
+        if(mensajeTexto.trim() == 'form'){
+            conversacion({
+                actor: 'Chatboot',
+                mensaje: `${data['name']} completa el siguiente formulario`
+            })
+            setMostrarFormChat(true)
+        }else{
+            await enviarConversacion(mensajeTexto);
+        }
+
     };
 
 
@@ -123,10 +145,14 @@ const ChatSeccion = ({ endPoint, idConversacion, onVolver }) => {
                             endPoint={endPoint}
                         />
                     ))}
+
+                    {
+                        mostrarFormChat && (
+                            <FormChatUsser enviarPeticionForm={enviarPeticionForm}/>
+                        )
+                    }
                 </fieldset>
                 <fieldset id="contendor_input">
-
-
                     <EntradaChatBoot onEnviarMensaje={handleEnviarMensaje} />
                 </fieldset>
             </article>

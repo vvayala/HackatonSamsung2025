@@ -3,7 +3,7 @@ import ChatSeccion from "./ChatSeccion";
 import "./styleChats.css"
 const Chats = ({ conversaciones, endPoint }) => {
     const [idConversacion, setIdConversacion] = useState(null);
-    const [modo, setModo] = useState('lista'); // 'lista' | 'nueva' | 'existente'
+    const [modo, setModo] = useState('lista');
 
     const handleChat = (id, tipo) => {
         if (tipo === 'nueva') {
@@ -35,7 +35,6 @@ const Chats = ({ conversaciones, endPoint }) => {
     return (
         <section className="listConversaciones">
             <h2>Conversaciones</h2>
-
             <div className="cardConversacion">
                 {conversaciones.map((conversacion, index) => (
                     <div key={index}>
@@ -47,7 +46,6 @@ const Chats = ({ conversaciones, endPoint }) => {
                     </div>
                 ))}
             </div>
-
             <div className="conversacion_cero">
                 <h2>Conversación Nueva</h2>
                 <button type="button" onClick={() => handleChat(null, 'nueva')}>

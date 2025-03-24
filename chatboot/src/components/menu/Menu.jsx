@@ -27,12 +27,12 @@ const Menu = ({ opcionSeleccionada, endPoint }) => {
                             <span className="links_name">CHAT BOOT</span>
                         </button>
 
-                        <button onClick={() => handleMenuClick("op2")}>
+                        {/* <button onClick={() => handleMenuClick("op2")}>
                             <div className="icon_item_menu">
                                 <img src={`${endPoint}/assets/assets/usser.png`} alt="Logo" />
                             </div>
                             <span className="links_name">Opcion 2</span>
-                        </button>
+                        </button> */}
 
                         <button onClick={() => handleMenuClick("creadores")}>
                             <div className="icon_item_menu">

@@ -20,6 +20,9 @@ main {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    padding: 5px 5px;
+
 }
 
 /* titulo del chat boot */
@@ -48,6 +51,7 @@ main {
     -ms-overflow-style: none;
 
     scroll-behavior: smooth;
+    border: none;
 }
 
 #contendor_input{
@@ -55,6 +59,9 @@ main {
     align-items: center;
     justify-content: center;
     height: 5vh;
+    border: none;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border-radius: 5px;
 }
 
 

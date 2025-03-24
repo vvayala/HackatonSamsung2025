@@ -13,17 +13,16 @@ const PageChat = ({ endPoint }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    // Carga inicial: intentamos obtener el usuario del localStorage
     useEffect(() => {
         const datosUsuario = JSON.parse(localStorage.getItem('credencialesUsuario')) || [];
 
         if (datosUsuario.length > 0) {
-            setUsuario(datosUsuario[0]);  // Guardamos el primer usuario
+            setUsuario(datosUsuario[0]); 
             setLogeado(true);
         }
-    }, []);  // Solo al montar
+    }, []); 
 
-    // Hook que carga conversaciones, si está logueado y tiene usuario
+
     useEffect(() => {
         if (!logueado || !usuario) return;
 
@@ -47,18 +46,10 @@ const PageChat = ({ endPoint }) => {
         obtenerConversaciones();
     }, [logueado, usuario]);
 
-    // 👇 Todos los hooks se ejecutan arriba, antes de cualquier return condicional
-
     // Si no está logueado, mostramos el formulario de login
     if (!logueado) {
         return <FormLogin setLogeado={setLogeado} setUsuario={setUsuario} />;
     }
-
-    if (loading) {
-        return <p>Cargando...</p>;
-    }
-
-
     if (conversacionApi.length > 0) {
         return <Chats conversaciones={conversacionApi} endPoint={endPoint} />;
     }
@@ -67,6 +58,9 @@ const PageChat = ({ endPoint }) => {
         return <ChatSeccion endPoint={endPoint} idConversacion={null}/>
     }
 
+    if (loading) {
+        return <p>Cargando...</p>;
+    }
     return <p>No tienes conversaciones disponibles.</p>;
 };
 
