@@ -1,0 +1,33 @@
+.listConversaciones{
+    height: 100vh;
+    padding: 1rem;
+}
+.cardConversacion{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.cardConversacion div{
+    min-width: 250px;
+    border: 1px solid transparent;
+    border-color: #696dbd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.conversacion_cero{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.conversacion_cero button{
+    min-width: 90px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}

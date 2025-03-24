@@ -1,16 +1,16 @@
 import { useState } from "react";
 import ChatSeccion from "./ChatSeccion";
-
+import "./styleChats.css"
 const Chats = ({ conversaciones, endPoint }) => {
     const [idConversacion, setIdConversacion] = useState(null);
     const [modo, setModo] = useState('lista'); // 'lista' | 'nueva' | 'existente'
 
     const handleChat = (id, tipo) => {
         if (tipo === 'nueva') {
-            setIdConversacion(null); // id null para nueva conversación
+            setIdConversacion(null); 
             setModo('nueva');
         } else {
-            setIdConversacion(id);   // id de conversación existente
+            setIdConversacion(id);   
             setModo('existente');
         }
     };
@@ -20,18 +20,18 @@ const Chats = ({ conversaciones, endPoint }) => {
         setModo('lista');
     };
 
-    // Mostrar ChatSeccion si está en modo 'nueva' o 'existente'
+
     if (modo !== 'lista') {
         return (
             <ChatSeccion
                 idConversacion={idConversacion}
                 endPoint={endPoint}
-                onVolver={volverALaLista} // Pasamos función para volver
+                onVolver={volverALaLista}
             />
         );
     }
 
-    // Modo lista: Mostrar todas las conversaciones
+   
     return (
         <section className="listConversaciones">
             <h2>Conversaciones</h2>
@@ -39,9 +39,8 @@ const Chats = ({ conversaciones, endPoint }) => {
             <div className="cardConversacion">
                 {conversaciones.map((conversacion, index) => (
                     <div key={index}>
-                        <h3>{conversacion.id}</h3>
                         <p>{conversacion.created_at}</p>
-                        <p>Conversación</p>
+                        <p>Conversación #{conversacion.id}</p>
                         <button type="button" onClick={() => handleChat(conversacion.id, 'existente')}>
                             Continuar
                         </button>

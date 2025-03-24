@@ -9,13 +9,21 @@ main {
 
 .section_chat {
     height: 100vh;
-    /* width: 100%; */
     display: flex;
     flex-direction: column;
 }
+
+.header_encabezado_chatboot{
+
+    height: 5vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 /* titulo del chat boot */
 .title_chatBoot{
-    height: 5vh;
     text-align: center;
     font-size: 2rem;
     margin: 0;
