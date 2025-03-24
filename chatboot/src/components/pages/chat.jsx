@@ -1,83 +1,75 @@
 
-import Mensaje from "../mensajes/mensaje";
-import EntradaChatBoot from "../input/input";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from 'axios';
-import { ToastContainer } from "react-toastify";
-import Notificacion from "../Notificacion";
 import "./chat.css"
-const PageChat = ({ endPoint }) => {
-    // aqui almacenaremos los mensajes que se envien y reciban
-    const mensajesGuardados = JSON.parse(localStorage.getItem('mensajesHipertensoBot')) || [];
-    const [mensajes, setMensajes] = useState(mensajesGuardados.length > 0
-        ? mensajesGuardados
-        : [{ tipo_usuario: 'Chatboot', mensaje: 'Hola soy HipertensoBot, ¿En qué puedo ayudarte?' }]
-    );
+import Chats from "../chats/chats";
+import FormLogin from "../login/login";
+import ChatSeccion from "../chats/ChatSeccion";
 
-    const conversacion = (mensaje) => {
-        setMensajes((mensajesPrevios) => {
-            const nuevosMensajes = [...mensajesPrevios, mensaje];
-            localStorage.setItem('mensajesHipertensoBot', JSON.stringify(nuevosMensajes));
-            return nuevosMensajes;
-        });
-        // setMensajes((mensajesPrevios) => [...mensajesPrevios, mensaje]);
+const PageChat = ({ endPoint }) => {
+    const [logueado, setLogeado] = useState(false);
+    const [usuario, setUsuario] = useState(null);
+    const [conversacionApi, setConversacionApi] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    // Carga inicial: intentamos obtener el usuario del localStorage
+    useEffect(() => {
+        const datosUsuario = JSON.parse(localStorage.getItem('credencialesUsuario')) || [];
+
+        if (datosUsuario.length > 0) {
+            setUsuario(datosUsuario[0]);  // Guardamos el primer usuario
+            setLogeado(true);
+        }
+    }, []);  // Solo al montar
+
+    // Hook que carga conversaciones, si está logueado y tiene usuario
+    useEffect(() => {
+        if (!logueado || !usuario) return;
+
+        const obtenerConversaciones = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.post('http://127.0.0.1:8000/api/getConversaciones', {
+                    id_usuario: usuario.id,
+                });
+
+                setConversacionApi(response.data);
+
+            } catch (err) {
+                setError('Error al obtener las conversaciones.');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        obtenerConversaciones();
+    }, [logueado, usuario]);
+
+    // 👇 Todos los hooks se ejecutan arriba, antes de cualquier return condicional
+
+    // Si no está logueado, mostramos el formulario de login
+    if (!logueado) {
+        return <FormLogin setLogeado={setLogeado} setUsuario={setUsuario} />;
     }
 
-    // este evento se ejecuta cuando cuando presionan el boton de enviar mensaje
-    const handleEnviarMensaje = async (mensajeTexto) => {
+    if (loading) {
+        return <p>Cargando...</p>;
+    }
 
-        // componemos el mensaje, el tipo usuario podria ser cualquiera
-        const mensajeNuevo = {
-            mensaje: mensajeTexto,
-            tipo_usuario: 'Dani'
-        }
 
-        conversacion(mensajeNuevo)
+    if (conversacionApi.length > 0) {
+        return <Chats conversaciones={conversacionApi} endPoint={endPoint} />;
+    }
 
-        // api lista para funcionar
-        try {
-            const response = await axios.post(`${endPoint}/HipertensoBot`, mensajeNuevo);
-            conversacion(response.data)
-        } catch (error) {
-            console.error('Error:', error);
-            Notificacion("Error Al consultar Api", "error");
-        }
+    if(conversacionApi.length == 0){
+        return <ChatSeccion endPoint={endPoint} idConversacion={null}/>
+    }
 
-    };
+    return <p>No tienes conversaciones disponibles.</p>;
+};
 
-    // esto es para que cuando, se cubra los mensajes del alto de la seccion, se haga scroll en automatico al ultimo mensaje
 
-    const contenedorRef = useRef(null);
-    useEffect(() => {
-        if (contenedorRef.current) {
-            contenedorRef.current.scrollTo({
-                top: contenedorRef.current.scrollHeight,
-                behavior: 'smooth',
-            });
-        }
-    }, [mensajes]);
-    return (
-
-        <section className="section_chat">
-            <h1 className="title_chatBoot">HipertensoBot</h1>
-            <article className="section_chat_group">
-                <fieldset id="contenedor_mensaje" ref={contenedorRef}>
-                    {mensajes.map((msg, index) => (
-                        <Mensaje
-                            key={index}
-                            tipo_usuario={msg.tipo_usuario}
-                            mensaje={msg.mensaje}
-                            endPoint={endPoint}
-                        />
-                    ))}
-                </fieldset>
-                <fieldset id="contendor_input">
-                    <EntradaChatBoot onEnviarMensaje={handleEnviarMensaje} />
-                </fieldset>
-            </article>
-            <ToastContainer />
-        </section>
-
-    )
-}
 export default PageChat;
+
