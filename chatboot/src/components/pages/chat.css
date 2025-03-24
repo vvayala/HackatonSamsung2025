@@ -9,13 +9,24 @@ main {
 
 .section_chat {
     height: 100vh;
-    /* width: 100%; */
     display: flex;
     flex-direction: column;
 }
+
+.header_encabezado_chatboot{
+
+    height: 5vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    padding: 5px 5px;
+
+}
+
 /* titulo del chat boot */
 .title_chatBoot{
-    height: 5vh;
     text-align: center;
     font-size: 2rem;
     margin: 0;
@@ -40,6 +51,7 @@ main {
     -ms-overflow-style: none;
 
     scroll-behavior: smooth;
+    border: none;
 }
 
 #contendor_input{
@@ -47,6 +59,9 @@ main {
     align-items: center;
     justify-content: center;
     height: 5vh;
+    border: none;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border-radius: 5px;
 }
 
 
