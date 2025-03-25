@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
 import random
 
 app = Flask(__name__)
+CORS(app)
 app.secret_key = 'clave_segura_dra_cardio_2025'
 
 # Configuración del chatbot
@@ -18,7 +20,8 @@ BOT_PROFILE = {
 RESPONSES = {
     "greeting": "¡Hola! {emoji} Soy {name}, tu asistente cardiovascular",
     "options": ["Evaluar mi riesgo", "Consejos de salud"],
-    "methods": ["Modo conversación", "Formulario rápido"]
+    "methods": ["Modo conversación", "Formulario rápido"],
+    "farewell": "¡Gracias por usar mis servicios! ❤️ Recuerda cuidar tu salud cardiovascular."
 }
 
 QUESTIONS = [
@@ -57,7 +60,7 @@ def calculate_risk(data):
             if bmi >= 30: risk += 20
             elif bmi >= 25: risk += 10
         
-        # Risk factors (now handling both text and boolean)
+        # Risk factors
         family_history = str(data.get('family_history', '')).lower()
         if family_history in ['sí', 'si', 'yes', 'true']: risk += 15
         
@@ -99,7 +102,7 @@ def handle_chat():
             'completed': False
         }
 
-        # Máquina de estados
+        # Máquina de estados mejorada
         if session['state'] == 'welcome':
             response['message'] = format_response(RESPONSES["greeting"])
             response['options'] = RESPONSES["options"]
@@ -110,12 +113,17 @@ def handle_chat():
                 response['message'] = "¿Cómo prefieres realizar la evaluación?"
                 response['options'] = RESPONSES["methods"]
                 session['state'] = 'method_choice'
-            elif "consejos" in user_input:
+            elif "consejos" in user_input or "salud" in user_input:
                 response['message'] = "Consejos de salud:\n\n" + "\n".join(f"• {tip}" for tip in BOT_PROFILE["tips"])
                 response['options'] = ["Evaluar mi riesgo", "Salir"]
+            elif "salir" in user_input:
+                response['message'] = RESPONSES["farewell"]
+                response['options'] = []
+                session = {}
             else:
                 response['message'] = "No entendí tu respuesta. Por favor elige una opción:"
                 response['options'] = RESPONSES["options"]
+                
         
         elif session['state'] == 'method_choice':
             if "conversación" in user_input:
@@ -124,6 +132,10 @@ def handle_chat():
             elif "formulario" in user_input:
                 session['state'] = 'quick_form'
                 response['show_form'] = True
+            elif "salir" in user_input:
+                response['message'] = RESPONSES["farewell"]
+                response['options'] = []
+                session = {}
             else:
                 response['message'] = "Por favor elige un método de evaluación:"
                 response['options'] = RESPONSES["methods"]
@@ -142,7 +154,6 @@ def handle_chat():
                     response['message'] = f"Por favor ingresa un número válido para: {current_question['text']}"
                     return jsonify(response)
             else:
-                # Almacenar como texto para evitar problemas con booleanos
                 session['data'][current_question['field']] = user_input
             
             # Avanzar o finalizar
@@ -158,8 +169,27 @@ def handle_chat():
                     response['message'] += "🟠 Riesgo moderado - Recomendamos cambios en tu estilo de vida"
                 else:
                     response['message'] += "🟢 Riesgo bajo - ¡Sigue manteniendo hábitos saludables!"
-                response['options'] = ["Nueva evaluación", "Salir"]
+                response['options'] = ["Evaluar nuevamente", "Salir"]
                 session['state'] = 'complete'
+        
+        # Modifica la parte de manejo del estado 'complete' en /api/chat
+        elif session['state'] == 'complete':
+            if "evaluar" in user_input or "nueva" in user_input or "nuevo" in user_input:
+                session = {
+                    'state': 'welcome',
+                    'data': {},
+                    'step': 0
+                }
+                response['message'] = format_response(RESPONSES["greeting"])
+                response['options'] = RESPONSES["options"]
+                response['new_session'] = True  # Nueva bandera para el frontend
+            elif "salir" in user_input:
+                response['message'] = RESPONSES["farewell"]
+                response['options'] = []
+                session = {}
+            else:
+                response['message'] = "Por favor elige una opción:"
+                response['options'] = ["Evaluar nuevamente", "Salir"]
         
         return jsonify(response)
     
@@ -177,7 +207,6 @@ def quick_assessment():
         if not data:
             return jsonify({'error': 'Datos no recibidos'}), 400
         
-        # Validación de campos requeridos
         required_fields = ['age', 'systolic', 'diastolic', 'weight', 'height']
         for field in required_fields:
             if field not in data or not str(data[field]).strip():
@@ -216,4 +245,4 @@ def quick_assessment():
         return jsonify({'error': 'Error interno del servidor'}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)
